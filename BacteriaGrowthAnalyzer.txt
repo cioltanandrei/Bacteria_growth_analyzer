@@ -1,0 +1,55 @@
+close all;
+clear all;
+clc;
+
+C = [0.3, 0.7, 1.4, 2.3, 4]
+K = [1.2, 2.2, 5.1, 7.4, 8.6]
+
+% c1 --> 1/c^2
+% k1 --> 1/k
+% ck1 --> (1/c^2) / (1/k)
+% c2 --> (1/c^2)^2
+
+for i = 1:length(C)
+    c1(i) = 1 / (C(i) * C(i));
+    k1(i) = 1 / (K(i));
+    ck1(i) = (c1(i)) * (k1(i));
+    c2(i) = (c1(i) * c1(i));
+    printf("%d ", c1(i));
+end
+
+% The sums
+sc1 = sum(c1);
+sk1 = sum(k1);
+sck1 = sum(ck1);
+sc2 = sum(c2);
+
+n = 5
+
+a1 = ((n * sck1 - sc1 * sk1)) / ((n * sc2) - (sc1 * sc1))
+a0 = (sk1 / n) - (a1) * (sc1 / n)
+
+k_max = (1 / a0)
+cs = (k_max * a1)
+
+cc = 2;
+kk = (k_max * cc * cc) / (cs + cc * cc)
+
+for i = 1:length(C)
+  k_test(i) = (k_max * C(i) * C(i)) / (cs + C(i) * C(i))
+  k1(i) = a1 * c1(i) + a0;
+end
+
+figure
+hold on
+plot(c1 ,k1, 'o-r')
+xlabel('C')
+ylabel('K')
+grid on
+
+figure
+hold on
+plot(C ,k_test, 'o-r')
+xlabel('C')
+ylabel('K')
+grid on
